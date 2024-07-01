@@ -1,7 +1,7 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  content: ["./app/**/*.tsx"],
+  content: ['./src/**/*.tsx'],
   theme: {},
   plugins: [],
 };
