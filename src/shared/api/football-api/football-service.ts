@@ -16,6 +16,11 @@ export class FootballApiService {
       const status = await fetcher({
         endpoint: this.endpoints.STATUS,
         responseSchema: statusEndpointResponse,
+        options: {
+          next: {
+            revalidate: 30,
+          },
+        },
       });
 
       return status.response;
