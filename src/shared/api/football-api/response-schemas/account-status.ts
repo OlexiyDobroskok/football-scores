@@ -17,6 +17,8 @@ const requestsSchema = z.object({
   limit_day: z.number(),
 });
 
+export type AccountRequests = z.infer<typeof requestsSchema>;
+
 export const accountStatusResponseSchema = z.object({
   account: accountSchema,
   subscription: subscriptionSchema,

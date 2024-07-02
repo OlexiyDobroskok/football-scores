@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 
+import { ApiDemoCounter } from '@shared/api/football-api';
+
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -14,7 +16,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <div className="absolute bottom-2 right-2 flex h-10 items-center justify-center">
+          <ApiDemoCounter />
+        </div>
+      </body>
     </html>
   );
 }
