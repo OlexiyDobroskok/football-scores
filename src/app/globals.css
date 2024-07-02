@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 242 38% 15%;
+    --foreground: 240 20% 98%;
+
+    --primary: 242 30% 21%;
+    --primary-foreground: 240 20% 98%;
+
+    --secondary: 243 20% 46%;
+    --secondary-foreground: 245 12% 42%;
+
+    --accent: 206 100% 65%;
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-background;
+  }
+}
