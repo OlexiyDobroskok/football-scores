@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import { Titillium_Web } from 'next/font/google';
+import { Suspense } from 'react';
 
-import { ApiDemoCounter } from '@shared/api/football-api';
+import { ApiDemoCounter, footballApiService } from '@shared/api/football-api';
+import { Icon } from '@shared/ui/icon';
 
 import './globals.css';
 
@@ -16,17 +18,24 @@ const titillium = Titillium_Web({
   display: 'swap',
 });
 
+export const experimental_ppr = true;
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const accountStatus = footballApiService.getAccountStatus();
   return (
     <html lang="en">
       <body className={titillium.className}>
         {children}
         <div className="absolute bottom-2 right-2 flex h-10 items-center justify-center">
-          <ApiDemoCounter />
+          <Suspense
+            fallback={<Icon type="common" name="loader" size="small" />}
+          >
+            <ApiDemoCounter accountStatusData={accountStatus} />
+          </Suspense>
         </div>
       </body>
     </html>

@@ -5,14 +5,18 @@ import React from 'react';
 import { cn } from '@shared/utils';
 
 import { getFootballApiAccountStatus } from '../actions/api-account-status-action';
-import { type AccountRequests } from '../response-schemas/account-status';
+import {
+  type AccountRequests,
+  type AccountStatusResponse,
+} from '../response-schemas/account-status';
 
-const initialState: AccountRequests | null = { current: 0, limit_day: 100 };
+const defaultRequestsStatus: AccountRequests = { current: 0, limit_day: 100 };
 
 export const useFootballApiAccountStatus = (
+  initialState: AccountRequests | null = defaultRequestsStatus,
   checkTime: number = 30000,
-): { accountStatus: AccountRequests | null; isPending: boolean } => {
-  const [accountStatus, checkAccountStatus, isPending] = React.useActionState(
+): { accountRequests: AccountRequests | null; isPending: boolean } => {
+  const [accountRequests, checkAccountStatus, isPending] = React.useActionState(
     getFootballApiAccountStatus,
     initialState,
   );
@@ -31,7 +35,7 @@ export const useFootballApiAccountStatus = (
     };
   }, [checkTime, checkAccountStatus]);
 
-  return { accountStatus, isPending };
+  return { accountRequests, isPending };
 };
 
 const StatusArea = ({
@@ -55,9 +59,16 @@ const StatusArea = ({
   );
 };
 
-export function ApiDemoCounter() {
-  const { accountStatus, isPending } = useFootballApiAccountStatus();
-  if (!accountStatus) {
+export function ApiDemoCounter({
+  accountStatusData,
+}: {
+  accountStatusData: Promise<AccountStatusResponse | null>;
+}) {
+  const accountStatus = React.use(accountStatusData);
+  const { accountRequests, isPending } = useFootballApiAccountStatus(
+    accountStatus?.requests,
+  );
+  if (!accountRequests) {
     return (
       <StatusArea isPending={isPending} isWarning>
         <p className="text-center">Something went wrong</p>
@@ -65,13 +76,13 @@ export function ApiDemoCounter() {
     );
   }
 
-  const warningLimit = accountStatus.limit_day - 20;
-  const isWarning = accountStatus.current > warningLimit;
+  const warningLimit = accountRequests.limit_day - 20;
+  const isWarning = accountRequests.current > warningLimit;
 
   return (
     <StatusArea isPending={isPending} isWarning={isWarning}>
       <p>
-        {accountStatus.current} / {accountStatus.limit_day}
+        {accountRequests.current} / {accountRequests.limit_day}
       </p>
     </StatusArea>
   );
