@@ -10,7 +10,7 @@ export const mapLeague = (leagueDto: LeaguesDTO): League => {
   const { league, country, seasons } = leagueDto;
   const leagueLogo = getLeagueLogo(league.id);
   const countryFlag = country.code ? getCountryFlag(country.code) : null;
-  
+
   return {
     id: league.id.toString(),
     name: league.name,
@@ -20,11 +20,16 @@ export const mapLeague = (leagueDto: LeaguesDTO): League => {
       code: country.code,
       flag: countryFlag,
     },
-    seasons: seasons.map((season) => ({
-      year: season.year.toString(),
-      start: season.start,
-      end: season.end,
-      current: season.current,
-    })),
+    seasons: seasons
+      .map((season) => ({
+        year: season.year.toString(),
+        start: season.start,
+        end: season.end,
+        current: season.current,
+      }))
+      .toSorted(
+        (prevSeason, nextSeason) =>
+          Number(nextSeason.year) - Number(prevSeason.year),
+      ),
   };
 };
