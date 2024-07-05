@@ -11,26 +11,51 @@ accessHeaders.append('x-rapidapi-key', serverEnv.FOOTBALL_API_KEY);
 
 export const endpoints = {
   STATUS: '/status',
+  LEAGUES: '/leagues',
 } as const;
 
 export type FootballApiEndpoints = typeof endpoints;
 export type FootballApiEndpoint = (typeof endpoints)[keyof typeof endpoints];
 
+export type QueryParams = Record<string, string | number | undefined>;
+
 interface FetchArguments<ZT extends z.ZodType> {
   endpoint: FootballApiEndpoint;
   responseSchema: ZT;
+  queryParams?: QueryParams;
   options?: RequestInit;
 }
 
-const createURL = (endpoint: FootballApiEndpoint): string =>
-  `${baseUrl}${endpoint}`;
+const createQueries = (queryParams: QueryParams): string => {
+  let queries = '';
+
+  for (const [key, value] of Object.entries(queryParams)) {
+    if (queries.length === 0) {
+      queries = `?${key}=${value}`;
+      continue;
+    }
+
+    queries += `&${key}=${value}`;
+  }
+
+  return queries;
+};
+
+const createURL = (
+  endpoint: FootballApiEndpoint,
+  queryParams?: QueryParams,
+): string =>
+  queryParams
+    ? `${baseUrl}${endpoint}${createQueries(queryParams)}`
+    : `${baseUrl}${endpoint}`;
 
 export const fetcher = async <ZT extends z.ZodType>({
   endpoint,
+  queryParams,
   responseSchema,
   options,
 }: FetchArguments<ZT>): Promise<ZT['_output']> => {
-  const url = createURL(endpoint);
+  const url = createURL(endpoint, queryParams);
   const response = await fetch(url, {
     headers: accessHeaders,
     ...options,
@@ -41,7 +66,6 @@ export const fetcher = async <ZT extends z.ZodType>({
     throw new Error(errorMessage);
   }
   const data = (await response.json()) as unknown;
-
   const parsedData = responseSchema.safeParse(data);
 
   if (!parsedData.success) {
