@@ -1,5 +1,10 @@
 export const commonIcons = {
   LOADER: 'loader',
-} as const
+  SEARCH: 'search',
+  ARROW_UP: 'arrowUp',
+  ARROW_DOWN: 'arrowDown',
+  ARROW_PREV: 'arrowPrev',
+  ARROW_NEXT: 'arrowNext',
+} as const;
 
-export type CommonIcons = typeof commonIcons[keyof typeof commonIcons]
+export type CommonIcons = (typeof commonIcons)[keyof typeof commonIcons];
