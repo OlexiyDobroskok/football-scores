@@ -1,22 +1,21 @@
 import React from 'react';
 
-import { leagues } from '../model/navigation-data';
+import { type League } from '@entities/league';
+
+import { staticLeagues } from '../model/navigation-data';
 
 import { NavItem } from './nav-item';
+import { UnlistedActiveLeague } from './unlisted-active-league';
 
-export function MobileLeaguesNavigation({
-  untrackedLeagueSlot,
-}: {
-  untrackedLeagueSlot?: React.ReactNode;
-}) {
-  const navigationList = leagues.map((league) => (
-    <NavItem key={league.id} league={league} />
+export function MobileLeaguesNavigation({ league }: { league: League | null }) {
+  const navigationList = staticLeagues.map((staticLeague) => (
+    <NavItem key={staticLeague.id} league={staticLeague} />
   ));
 
   return (
     <nav className="overflow-hidden">
-      <ul className="scrollbar-hidden flex overflow-x-scroll bg-secondary">
-        {untrackedLeagueSlot}
+      <ul className="scrollbar-hidden flex items-center overflow-x-scroll bg-secondary">
+        {league && <UnlistedActiveLeague league={league} />}
         {navigationList}
       </ul>
     </nav>

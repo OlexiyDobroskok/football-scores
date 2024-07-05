@@ -6,7 +6,7 @@ export interface NavLeague {
   logo: string;
 }
 
-export const leagues: NavLeague[] = [
+export const staticLeagues: NavLeague[] = [
   {
     id: '39',
     name: 'Premier League',
