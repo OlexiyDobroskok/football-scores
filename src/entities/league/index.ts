@@ -1,2 +1,2 @@
 export { getLeagueInformation } from './api/get-league-information';
-export type { League } from './model/types';
+export type { League, LeagueSeason } from './model/types';

@@ -3,7 +3,7 @@ export interface League {
   name: string;
   logo: string;
   country: Country;
-  seasons: Season[];
+  seasons: LeagueSeason[];
 }
 
 interface Country {
@@ -12,7 +12,7 @@ interface Country {
   flag: string | null;
 }
 
-interface Season {
+export interface LeagueSeason {
   year: string;
   start: string;
   end: string;
