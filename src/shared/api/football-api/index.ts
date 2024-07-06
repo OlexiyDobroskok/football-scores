@@ -1,5 +1,6 @@
 export { footballApiService } from './football-service';
 export * from './lib/media';
+export { type FixtureDTO } from './response-schemas/fixtures';
 export type {
   LeaguesDTO,
   LeaguesQueryParams,

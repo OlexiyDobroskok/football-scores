@@ -13,6 +13,7 @@ export const endpoints = {
   STATUS: '/status',
   LEAGUES: '/leagues',
   ROUNDS: '/fixtures/rounds',
+  FIXTURES: '/fixtures',
 } as const;
 
 export type FootballApiEndpoints = typeof endpoints;

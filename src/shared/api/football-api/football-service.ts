@@ -7,6 +7,11 @@ import {
   statusEndpointResponse,
 } from './response-schemas/account-status';
 import {
+  type FixtureDTO,
+  type FixturesQueryParams,
+  fixturesResponseSchema,
+} from './response-schemas/fixtures';
+import {
   type LeaguesDTO,
   type LeaguesQueryParams,
   leaguesResponseSchema,
@@ -77,6 +82,28 @@ export class FootballApiService {
         },
       });
       return rounds.response;
+    } catch (error) {
+      logger(error);
+      return null;
+    }
+  }
+
+  async getFixtures(
+    queryParams: FixturesQueryParams,
+    revalidate: number = 86400,
+  ): Promise<FixtureDTO[] | null> {
+    try {
+      const fixtures = await fetcher({
+        endpoint: this.endpoints.FIXTURES,
+        responseSchema: fixturesResponseSchema,
+        queryParams,
+        options: {
+          next: {
+            revalidate,
+          },
+        },
+      });
+      return fixtures.response;
     } catch (error) {
       logger(error);
       return null;
