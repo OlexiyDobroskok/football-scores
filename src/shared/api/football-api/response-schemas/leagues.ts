@@ -2,10 +2,12 @@ import { z } from 'zod';
 
 import { QueryParams } from '../config';
 
+import { baseResponseSchema } from './base';
+
 const leagueSchema = z.object({
   id: z.number(),
   name: z.string(),
-  type: z.string(),
+  type: z.union([z.literal('League'), z.literal('Cup')]),
   logo: z.string().url(),
 });
 
@@ -50,15 +52,7 @@ const leaguesDataSchema = z.object({
 
 export type LeaguesDTO = z.infer<typeof leaguesDataSchema>;
 
-export const leaguesResponseSchema = z.object({
-  get: z.string(),
-  parameters: z.union([z.array(z.void()), z.object({})]),
-  errors: z.array(z.string()),
-  results: z.number(),
-  paging: z.object({
-    current: z.number(),
-    total: z.number(),
-  }),
+export const leaguesResponseSchema = baseResponseSchema.extend({
   response: z.array(leaguesDataSchema),
 });
 

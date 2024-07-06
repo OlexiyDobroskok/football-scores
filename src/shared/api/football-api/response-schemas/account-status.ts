@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { baseResponseSchema } from './base';
+
 const accountSchema = z.object({
   firstname: z.string(),
   lastname: z.string(),
@@ -27,10 +29,6 @@ export const accountStatusResponseSchema = z.object({
 
 export type AccountStatusResponse = z.infer<typeof accountStatusResponseSchema>;
 
-export const statusEndpointResponse = z.object({
-  get: z.literal('status'),
-  parameters: z.array(z.void()),
-  errors: z.array(z.string()),
-  results: z.number(),
+export const statusEndpointResponse = baseResponseSchema.extend({
   response: accountStatusResponseSchema,
 });
