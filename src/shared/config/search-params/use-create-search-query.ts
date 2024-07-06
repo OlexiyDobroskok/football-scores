@@ -2,20 +2,29 @@
 
 import { useSearchParams } from 'next/navigation';
 
-interface SearchParam {
-  name: string;
-  value: string;
-}
+type SearchParam =
+  | {
+      name: string;
+      value: string;
+    }
+  | {
+      name: string;
+      clear: boolean;
+    };
 
-type CreateSearchQuery = (...args: SearchParam[]) => string;
+type CreateSearchQuery = (...params: SearchParam[]) => string;
 
 export const useCreateSearchQuery = (): CreateSearchQuery => {
-  const searchParams = useSearchParams().toString();
+  const currentSearchParams = useSearchParams().toString();
 
-  return (...args: SearchParam[]) => {
-    const params = new URLSearchParams(searchParams);
-    args.forEach(({ name, value }) => params.set(name, value));
+  return (...params: SearchParam[]) => {
+    const searchParams = new URLSearchParams(currentSearchParams);
+    params.forEach((param) => {
+      'clear' in param
+        ? searchParams.delete(param.name)
+        : searchParams.set(param.name, param.value);
+    });
 
-    return `?${params.toString()}`;
+    return `?${searchParams.toString()}`;
   };
 };
