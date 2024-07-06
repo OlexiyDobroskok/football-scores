@@ -2,7 +2,7 @@ import { footballApiService } from '@shared/api/football-api';
 
 import 'server-only';
 
-import { mapMatchweek } from '../lib/mapMatchweeks';
+import { mapMatchweek } from '../lib/map-matchweeks';
 import { type Matchweek } from '../model/types';
 
 export const getLeagueMatchweeks = async (params: {
