@@ -12,6 +12,7 @@ accessHeaders.append('x-rapidapi-key', serverEnv.FOOTBALL_API_KEY);
 export const endpoints = {
   STATUS: '/status',
   LEAGUES: '/leagues',
+  ROUNDS: '/fixtures/rounds',
 } as const;
 
 export type FootballApiEndpoints = typeof endpoints;

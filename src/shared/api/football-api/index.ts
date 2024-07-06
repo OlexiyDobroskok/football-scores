@@ -4,6 +4,7 @@ export type {
   LeaguesDTO,
   LeaguesQueryParams,
 } from './response-schemas/leagues';
+export type { RoundDTO, RoundQueryParams } from './response-schemas/rounds';
 export {
   ApiDemoCounter,
   useFootballApiAccountStatus,

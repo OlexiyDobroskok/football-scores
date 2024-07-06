@@ -11,6 +11,11 @@ import {
   type LeaguesQueryParams,
   leaguesResponseSchema,
 } from './response-schemas/leagues';
+import {
+  type RoundDTO,
+  type RoundQueryParams,
+  roundsResponseSchema,
+} from './response-schemas/rounds';
 import { endpoints, fetcher, type FootballApiEndpoints } from './config';
 
 export class FootballApiService {
@@ -51,6 +56,27 @@ export class FootballApiService {
       });
 
       return leagues.response;
+    } catch (error) {
+      logger(error);
+      return null;
+    }
+  }
+
+  async getLeagueRounds(
+    queryParams?: RoundQueryParams,
+  ): Promise<RoundDTO[] | null> {
+    try {
+      const rounds = await fetcher({
+        endpoint: this.endpoints.ROUNDS,
+        responseSchema: roundsResponseSchema,
+        queryParams,
+        options: {
+          next: {
+            revalidate: 86400,
+          },
+        },
+      });
+      return rounds.response;
     } catch (error) {
       logger(error);
       return null;
