@@ -6,15 +6,21 @@ import React from 'react';
 import { type LeagueSeason } from '@entities/league';
 import {
   appSearchParams,
-  useAppSearchParams,
   useCreateSearchQuery,
 } from '@shared/config/search-params';
 import { Icon } from '@shared/ui/icon';
 
-export function SeasonSwitcher({ seasons }: { seasons: LeagueSeason[] }) {
+export interface SeasonSwitcherProps {
+  seasons: LeagueSeason[];
+  selectedSeason: LeagueSeason;
+}
+
+export function SeasonSwitcher({
+  seasons,
+  selectedSeason,
+}: SeasonSwitcherProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { season: seasonQuery } = useAppSearchParams();
   const createSearchQuery = useCreateSearchQuery();
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -25,30 +31,17 @@ export function SeasonSwitcher({ seasons }: { seasons: LeagueSeason[] }) {
     return `${seasonStartDate.getFullYear()}-${seasonEndDate.getFullYear()}`;
   };
 
-  const currentSeason = seasonQuery
-    ? seasons.find((season) => season.year === seasonQuery)
-    : seasons.find((season) => season.current);
-
-  if (!currentSeason) {
-    throw new Error('Current season not found');
-  }
-
-  React.useEffect(() => {
-    if (!seasonQuery) {
-      const searchQuery = createSearchQuery({
-        name: appSearchParams.SEASON,
-        value: currentSeason.year,
-      });
-      const href = pathname + searchQuery;
-      router.push(href);
-    }
-  }, []);
-
   const changeSeason = (season: string) => {
-    const searchQuery = createSearchQuery({
-      name: appSearchParams.SEASON,
-      value: season,
-    });
+    const searchQuery = createSearchQuery(
+      {
+        name: appSearchParams.SEASON,
+        value: season,
+      },
+      {
+        name: appSearchParams.MATCHWEEK,
+        clear: true,
+      },
+    );
     const href = pathname + searchQuery;
     router.push(href);
     setIsOpen(false);
@@ -68,8 +61,8 @@ export function SeasonSwitcher({ seasons }: { seasons: LeagueSeason[] }) {
   });
 
   const currentSeasonName = creteSeasonName(
-    currentSeason.start,
-    currentSeason.end,
+    selectedSeason.start,
+    selectedSeason.end,
   );
 
   const toggleSwitcher = () => {
