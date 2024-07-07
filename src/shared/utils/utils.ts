@@ -45,3 +45,27 @@ export const resizeImage = (
 
   return src + transformQuery;
 };
+
+// Date
+
+export const shortTime = new Intl.DateTimeFormat('en', {
+  hour: '2-digit',
+  minute: '2-digit',
+  hour12: false,
+});
+
+export const shortDate = new Intl.DateTimeFormat('en', {
+  weekday: 'short',
+  day: 'numeric',
+  month: 'short',
+  year: 'numeric',
+});
+
+
+export const formatDateTimeAttrDate = (date:Date):string => {
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  
+  return `${year}-${month}-${day}`
+}
