@@ -19,10 +19,14 @@ export function NavItem({ league }: { league: NavLeague }) {
   const { league: currentLeagueId } = useAppSearchParams();
 
   const { id, logo, name } = league;
-  const searchQuery = createSearchQuery({
-    name: appSearchParams.LEAGUE,
-    value: id,
-  });
+  const searchQuery = createSearchQuery(
+    {
+      name: appSearchParams.LEAGUE,
+      value: id,
+    },
+    { name: appSearchParams.MATCHWEEK, clear: true },
+    { name: appSearchParams.MATCHES_STATUS, clear: true },
+  );
   const href = pathname + searchQuery;
   const isActive = currentLeagueId === id;
 
