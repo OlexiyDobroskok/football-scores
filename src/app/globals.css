@@ -11,7 +11,7 @@
     --primary-foreground: 240 20% 98%;
 
     --secondary: 243 20% 46%;
-    --secondary-foreground: 245 12% 42%;
+    --secondary-foreground: 240 20% 98%;
 
     --accent: 206 100% 65%;
   }
@@ -33,4 +33,3 @@
     scrollbar-width: none;
   }
 }
-
