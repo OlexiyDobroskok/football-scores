@@ -1,22 +1,28 @@
 import Image from 'next/image';
 import { Suspense } from 'react';
 
-import { getLeagueInformation } from '@entities/league';
+import { getLeagueInformation, leagueType } from '@entities/league';
 import { MatchweekSwitcher } from '@features/matchweek-switcher';
+import { RoundSwitcher } from '@features/round-switcher';
 import { SeasonSwitcher } from '@features/season-switcher';
 import {
   type AppSearchParams,
   defaultLeague,
 } from '@shared/config/search-params';
 import { MobileLeaguesNavigation } from '@widgets/leagues-navigation';
+import { MatchesPreview } from '@widgets/matches-preview';
 
 export default async function Home({
   searchParams,
 }: {
   searchParams: AppSearchParams;
 }) {
-  const { league: leagueId, season, mw: chosenMatchweek } = searchParams;
-
+  const {
+    league: leagueId,
+    season,
+    mw: chosenMatchweek,
+    ms: matchesStatus,
+  } = searchParams;
   const league = await getLeagueInformation(leagueId ?? defaultLeague);
 
   if (!league) {
@@ -32,6 +38,12 @@ export default async function Home({
   if (!selectedSeason) {
     throw new Error('Season not found');
   }
+  
+  const isCup = league.type === leagueType.CUP;
+  const isLeague = league.type === leagueType.LEAGUE;
+  const roundQuery = isLeague && chosenMatchweek
+    ? `Regular Season - ${chosenMatchweek}`
+    : chosenMatchweek
 
   return (
     <>
@@ -60,15 +72,33 @@ export default async function Home({
           </div>
         )}
       </header>
-      <main>
-        <div className="flex justify-center pt-4">
-          <Suspense fallback={<div>Loading...</div>}>
-            <MatchweekSwitcher
-              leagueId={leagueId ?? defaultLeague}
+      <main className="px-5">
+        <div className="pt-4">
+          <div>
+            <MatchesPreview
+              league={leagueId ?? defaultLeague}
               season={selectedSeason.year}
-              chosenMatchweek={chosenMatchweek}
+              round={roundQuery}
+              selectedMatchesStatus={matchesStatus}
+              roundSwitcherSlot={
+                <Suspense fallback={<div>Loading...</div>}>
+                  {isCup ? (
+                    <RoundSwitcher
+                      leagueId={leagueId ?? defaultLeague}
+                      season={selectedSeason.year}
+                      chosenRound={chosenMatchweek}
+                    />
+                  ) : (
+                    <MatchweekSwitcher
+                      leagueId={leagueId ?? defaultLeague}
+                      season={selectedSeason.year}
+                      chosenMatchweek={chosenMatchweek}
+                    />
+                  )}
+                </Suspense>
+              }
             />
-          </Suspense>
+          </div>
         </div>
       </main>
     </>
