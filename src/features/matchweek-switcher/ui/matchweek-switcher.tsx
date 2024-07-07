@@ -1,10 +1,13 @@
-import {
-  getCurrentMatchweek,
-  getLeagueMatchweeks,
-} from '../api/get-league-matchweeks';
+import { getCurrentRound, getRounds } from '@entities/round';
+
+import { type Matchweek } from '../model/types';
 
 import { NextMatchweekButton } from './next-matchweek-button ';
 import { PrevMatchweekButton } from './prev-matchweek-button';
+
+const getRoundNumber = (round: string): Matchweek => {
+  return +round.split(' ').at(-1)!;
+};
 
 export interface MatchweekSwitcherProps {
   leagueId: string;
@@ -17,8 +20,8 @@ export async function MatchweekSwitcher({
   season,
   chosenMatchweek,
 }: MatchweekSwitcherProps) {
-  const matchweeksData = getLeagueMatchweeks({ league: leagueId, season });
-  const currentLeagueMatchweekData = getCurrentMatchweek({
+  const matchweeksData = getRounds({ league: leagueId, season });
+  const currentLeagueMatchweekData = getCurrentRound({
     league: leagueId,
     season,
   });
@@ -28,24 +31,28 @@ export async function MatchweekSwitcher({
     currentLeagueMatchweekData,
   ]);
 
-  if (!matchweeks) {
+  if (!matchweeks.length) {
     return <></>;
   }
+  const matchweekNumbers = matchweeks.map((matchweek) =>
+    getRoundNumber(matchweek),
+  );
+  const currentMatchweekNumber = currentLeagueMatchweek
+    ? getRoundNumber(currentLeagueMatchweek)
+    : 1;
 
-  const latestMatchweek = Math.max(...matchweeks);
+  const latestMatchweek = Math.max(...matchweekNumbers);
   const selectedMatchweek = chosenMatchweek
     ? +chosenMatchweek
-    : currentLeagueMatchweek
-      ? currentLeagueMatchweek
-      : 1;
+    : currentMatchweekNumber;
 
   return (
     <div className="flex items-center gap-6 px-4 py-2 text-primary-foreground">
-      <div>
+      <div className="rounded px-4 py-1 active:bg-accent">
         <PrevMatchweekButton selectedMatchweek={selectedMatchweek} />
       </div>
       <p className="text-lg font-medium">Matchweek {selectedMatchweek}</p>
-      <div>
+      <div className="rounded px-4 py-1 active:bg-accent">
         <NextMatchweekButton
           latestMatchweek={latestMatchweek}
           selectedMatchweek={selectedMatchweek}
