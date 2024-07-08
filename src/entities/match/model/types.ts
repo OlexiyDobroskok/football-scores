@@ -3,7 +3,7 @@ import { matchShortStatuses } from '../lib/match-statuses';
 export type MatchShortStatus =
   (typeof matchShortStatuses)[keyof typeof matchShortStatuses];
 
-interface Periods {
+export interface Periods {
   first: number | null;
   second: number | null;
 }
@@ -14,7 +14,7 @@ interface Venue {
   city: string | null;
 }
 
-interface Status {
+export interface Status {
   long: string;
   short: MatchShortStatus;
   elapsed: number | null;
