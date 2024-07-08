@@ -17,7 +17,7 @@ export function MatchListItem({
   children,
 }: MatchListItemProps) {
   return (
-    <li className="relative bg-secondary px-2 shadow-md shadow-primary">
+    <li className="relative bg-secondary/30 px-2 shadow-sm shadow-secondary/50">
       {children}
       <Link
         className="absolute inset-0"
