@@ -2,17 +2,16 @@
 
 import { shortTime, useIsClient } from '@shared/utils';
 
-export function MatchTime({
-  date,
-  isTBDStatus,
-}: {
+export interface MatchStartTimeProps {
   date: string;
   isTBDStatus: boolean;
-}) {
+}
+
+export function MatchStartTime({ date, isTBDStatus }: MatchStartTimeProps) {
   const isClient = useIsClient();
 
   if (isTBDStatus) {
-    return <span className=''>- : -</span>;
+    return <span className="">- : -</span>;
   }
 
   const matchDate = new Date(date);
