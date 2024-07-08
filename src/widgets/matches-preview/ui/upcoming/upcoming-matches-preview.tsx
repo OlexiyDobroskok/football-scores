@@ -3,7 +3,6 @@ import {
   matchShortStatuses,
   MatchStartTime,
 } from '@entities/match';
-import { getCurrentRound } from '@entities/round';
 import { Message } from '@shared/ui/message';
 
 import { getUpcomingMatches } from '../../api/get-matches';
@@ -23,7 +22,7 @@ export async function UpcomingMatchesPreview({
   season,
 }: UpcomingMatchesPreviewProps) {
   const upcomingMatches = await getUpcomingMatches({
-    league:leagueId,
+    league: leagueId,
     round,
     season,
   });
