@@ -6,6 +6,7 @@ import { RoundSwitcher } from '@features/round-switcher';
 import { Tab } from '@shared/ui/tab';
 
 import { matchStatuses } from '../../model/types';
+import { FinishedMatchesPreview } from '../finished/finished-matches-preview';
 import { UpcomingMatchesPreview } from '../upcoming/upcoming-matches-preview';
 
 import { TabLink } from './tab-link';
@@ -17,6 +18,7 @@ export interface MatchesPreviewProps {
   season: string;
   leagueType: LeagueType;
   leagueName: string;
+  isFinishedSeason: boolean;
 }
 
 export async function MatchesPreview({
@@ -25,7 +27,8 @@ export async function MatchesPreview({
   season,
   matchStatusQuery,
   leagueType,
-  leagueName
+  leagueName,
+  isFinishedSeason,
 }: MatchesPreviewProps) {
   const roundsData = getRounds({ league: leagueId, season });
   const currentRoundData = getCurrentRound({
@@ -48,14 +51,33 @@ export async function MatchesPreview({
       ? currentRound
       : rounds.at(-1)!;
 
-  const selectedTab = matchStatusQuery ?? matchStatuses.UPCOMING;
-  const tabList = [
-    matchStatuses.LIVE,
-    matchStatuses.UPCOMING,
-    matchStatuses.FINISHED,
-  ].map((tabTitle) => (
+  const selectedTab = matchStatusQuery
+    ? matchStatusQuery
+    : isFinishedSeason
+      ? matchStatuses.FINISHED
+      : matchStatuses.UPCOMING;
+
+  const currentRoundIndex = currentRound ? rounds.indexOf(currentRound) : -1;
+  const selectedRoundIndex = rounds.indexOf(selectedRound);
+  const isUpcomingRound =
+    currentRoundIndex !== -1 &&
+    selectedRoundIndex !== -1 &&
+    selectedRoundIndex > currentRoundIndex;
+  const isFinishedRound =
+    currentRoundIndex === -1 ||
+    (currentRoundIndex !== -1 &&
+      selectedRoundIndex !== -1 &&
+      selectedRoundIndex < currentRoundIndex);
+
+  const enabledTabs = isFinishedRound
+    ? [matchStatuses.FINISHED]
+    : isUpcomingRound
+      ? [matchStatuses.UPCOMING]
+      : [matchStatuses.LIVE, matchStatuses.UPCOMING, matchStatuses.FINISHED];
+
+  const tabList = enabledTabs.map((tabTitle,_,tabs) => (
     <li className="flex-1 text-center" key={tabTitle}>
-      <Tab isActive={tabTitle === selectedTab}>
+      <Tab isActive={tabTitle === selectedTab} isSingle={tabs.length === 1}>
         <TabLink status={tabTitle}>
           <span className="capitalize text-primary-foreground">{tabTitle}</span>
         </TabLink>
@@ -82,6 +104,15 @@ export async function MatchesPreview({
         {isUpcomingActive && (
           <Suspense fallback={<div>Loading...</div>}>
             <UpcomingMatchesPreview
+              leagueId={leagueId}
+              season={season}
+              round={selectedRound}
+            />
+          </Suspense>
+        )}
+        {isFinishedActive && (
+          <Suspense fallback={<div>Loading...</div>}>
+            <FinishedMatchesPreview
               leagueId={leagueId}
               season={season}
               round={selectedRound}

@@ -39,6 +39,9 @@ export default async function Home({
     throw new Error('Season not found');
   }
 
+  const isFinishedSeason =
+    !!seasonQuery && seasonQuery !== league.currentSeason?.year;
+
   return (
     <>
       <header className="space-y-2">
@@ -76,6 +79,7 @@ export default async function Home({
               leagueName={league.name}
               roundQuery={matchRoundQuery}
               matchStatusQuery={matchesStatusQuery}
+              isFinishedSeason={isFinishedSeason}
             />
           </Suspense>
         </div>
