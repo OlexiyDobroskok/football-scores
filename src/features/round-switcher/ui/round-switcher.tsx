@@ -1,41 +1,29 @@
-import { getCurrentRound, getRounds } from '@entities/round';
+import { type LeagueType, leagueTypes } from '@entities/league';
+import { type Round } from '@entities/round';
 
 import { NextRoundButton } from './next-round-button ';
 import { PrevRoundButton } from './prev-round-button';
 
 export interface RoundSwitcherProps {
-  leagueId: string;
-  season: string;
-  chosenRound: string | null;
+  selectedRound:Round;
+  rounds: Round[];
+  leagueType: LeagueType;  
 }
 
-export async function RoundSwitcher({
-  leagueId,
-  season,
-  chosenRound,
+const getRoundNumber = (round: string): Round => {
+  return round.split(' ').at(-1)!;
+};
+
+export async function RoundSwitcher({rounds,selectedRound,leagueType,
+ 
 }: RoundSwitcherProps) {
-  const roundsData = getRounds({ league: leagueId, season });
-  const currentRoundData = getCurrentRound({
-    league: leagueId,
-    season,
-  });
-
-  const [rounds, currentRound] = await Promise.all([
-    roundsData,
-    currentRoundData,
-  ]);
-
-  if (!rounds.length) {
-    return <></>;
-  }
-
   const firstRound = rounds.at(0)!;
   const lastRound = rounds.at(-1)!;
-  const selectedRound = chosenRound
-    ? chosenRound
-    : currentRound
-      ? currentRound
-      : lastRound;
+
+  const switcherTitle =
+    leagueType === leagueTypes.LEAGUE
+      ? `Matchweek ${getRoundNumber(selectedRound)}`
+      : selectedRound;
 
   const selectedRoundIndex = rounds.findIndex(
     (round) => round === selectedRound,
@@ -55,7 +43,7 @@ export async function RoundSwitcher({
       <div>
         <PrevRoundButton prevRound={previousRound} />
       </div>
-      <p className="text-lg font-medium">{selectedRound}</p>
+      <p className="text-lg font-medium">{switcherTitle}</p>
       <div>
         <NextRoundButton nextRound={nextRound} />
       </div>
