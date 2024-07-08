@@ -18,10 +18,16 @@ export function NextRoundButton({ nextRound }: NextRoundButtonProps) {
   const pathname = usePathname();
   const createSearchQuery = useCreateSearchQuery();
 
-  const searchQuery = createSearchQuery({
-    name: appSearchParams.ROUND,
-    value: nextRound,
-  });
+  const searchQuery = createSearchQuery(
+    {
+      name: appSearchParams.ROUND,
+      value: nextRound,
+    },
+    {
+      name: appSearchParams.MATCHES_STATUS,
+      clear: true,
+    },
+  );
   const href = pathname + searchQuery;
 
   return (

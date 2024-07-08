@@ -18,10 +18,16 @@ export function PrevRoundButton({ prevRound }: PrevRoundButtonProps) {
   const pathname = usePathname();
   const createSearchQuery = useCreateSearchQuery();
 
-  const searchQuery = createSearchQuery({
-    name: appSearchParams.ROUND,
-    value: prevRound,
-  });
+  const searchQuery = createSearchQuery(
+    {
+      name: appSearchParams.ROUND,
+      value: prevRound,
+    },
+    {
+      name: appSearchParams.MATCHES_STATUS,
+      clear: true,
+    },
+  );
   const href = pathname + searchQuery;
 
   return (
