@@ -24,7 +24,7 @@ export function NavItem({ league }: { league: NavLeague }) {
       name: appSearchParams.LEAGUE,
       value: id,
     },
-    { name: appSearchParams.MATCHWEEK, clear: true },
+    { name: appSearchParams.ROUND, clear: true },
     { name: appSearchParams.MATCHES_STATUS, clear: true },
   );
   const href = pathname + searchQuery;

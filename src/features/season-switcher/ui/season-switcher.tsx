@@ -38,7 +38,7 @@ export function SeasonSwitcher({
         value: season,
       },
       {
-        name: appSearchParams.MATCHWEEK,
+        name: appSearchParams.ROUND,
         clear: true,
       },
     );

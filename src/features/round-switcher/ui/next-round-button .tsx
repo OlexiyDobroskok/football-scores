@@ -19,7 +19,7 @@ export function NextRoundButton({ nextRound }: NextRoundButtonProps) {
   const createSearchQuery = useCreateSearchQuery();
 
   const searchQuery = createSearchQuery({
-    name: appSearchParams.MATCHWEEK,
+    name: appSearchParams.ROUND,
     value: nextRound,
   });
   const href = pathname + searchQuery;
