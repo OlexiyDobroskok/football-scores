@@ -14,7 +14,7 @@ export function MobileLeaguesNavigation({ league }: { league: League | null }) {
 
   return (
     <nav className="overflow-hidden">
-      <ul className="scrollbar-hidden flex overflow-x-scroll bg-secondary">
+      <ul className="scrollbar-hidden flex overflow-x-scroll bg-secondary/50">
         {league && <UnlistedActiveLeague league={league} />}
         {navigationList}
       </ul>
