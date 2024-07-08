@@ -68,7 +68,7 @@ export async function FinishedMatchesPreview({
 
   return (
     <PreviewSection
-      title="Upcoming Matches"
+      title="Finished Matches"
       matchesListSlot={finishedMatchList}
     />
   );
