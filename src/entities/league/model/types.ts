@@ -1,9 +1,9 @@
-export const leagueType = {
+export const leagueTypes = {
   LEAGUE: 'League',
   CUP: 'Cup',
 } as const;
 
-export type LeagueType = (typeof leagueType)[keyof typeof leagueType];
+export type LeagueType = (typeof leagueTypes)[keyof typeof leagueTypes];
 
 export interface League {
   id: string;
