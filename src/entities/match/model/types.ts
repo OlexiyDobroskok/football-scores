@@ -32,12 +32,12 @@ interface Teams {
   away: Team;
 }
 
-interface Goals {
+export interface Goals {
   home: number | null;
   away: number | null;
 }
 
-interface Score {
+export interface Score {
   halftime: Goals;
   fulltime: Goals;
   extratime: Goals | null;
