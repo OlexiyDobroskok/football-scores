@@ -15,6 +15,18 @@ export interface SeasonSwitcherProps {
   selectedSeason: LeagueSeason;
 }
 
+const creteSeasonName = (startDate: string, endDate: string): string => {
+  const seasonStartDate = new Date(startDate);
+  const seasonEndDate = new Date(endDate);
+  const seasonStartYear = seasonStartDate.getFullYear();
+  const seasonEndYear = seasonEndDate.getFullYear();
+  const isEqualYear = seasonStartYear === seasonEndYear;
+
+  return isEqualYear
+    ? seasonStartYear.toString()
+    : `${seasonStartYear}-${seasonEndYear}`;
+};
+
 export function SeasonSwitcher({
   seasons,
   selectedSeason,
@@ -24,13 +36,6 @@ export function SeasonSwitcher({
   const createSearchQuery = useCreateSearchQuery();
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const creteSeasonName = (startDate: string, endDate: string): string => {
-    const seasonStartDate = new Date(startDate);
-    const seasonEndDate = new Date(endDate);
-
-    return `${seasonStartDate.getFullYear()}-${seasonEndDate.getFullYear()}`;
-  };
-
   const changeSeason = (season: string) => {
     const searchQuery = createSearchQuery(
       {
@@ -39,6 +44,10 @@ export function SeasonSwitcher({
       },
       {
         name: appSearchParams.ROUND,
+        clear: true,
+      },
+      {
+        name: appSearchParams.MATCHES_STATUS,
         clear: true,
       },
     );
@@ -70,9 +79,9 @@ export function SeasonSwitcher({
   };
 
   return (
-    <div className="relative bg-secondary">
+    <div className="relative z-10 min-w-32 bg-secondary">
       <button
-        className="flex items-center gap-2 px-7 py-1"
+        className="mx-auto flex items-center gap-2 px-7 py-1"
         onClick={toggleSwitcher}
       >
         <span>{currentSeasonName}</span>
