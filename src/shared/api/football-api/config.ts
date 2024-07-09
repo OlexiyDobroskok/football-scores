@@ -14,6 +14,7 @@ export const endpoints = {
   LEAGUES: '/leagues',
   ROUNDS: '/fixtures/rounds',
   FIXTURES: '/fixtures',
+  STANDINGS: '/standings',
 } as const;
 
 export type FootballApiEndpoints = typeof endpoints;

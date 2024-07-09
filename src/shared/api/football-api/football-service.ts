@@ -21,6 +21,10 @@ import {
   type RoundQueryParams,
   roundsResponseSchema,
 } from './response-schemas/rounds';
+import {
+  StandingsDTO,
+  standingsResponseSchema,
+} from './response-schemas/standings';
 import { endpoints, fetcher, type FootballApiEndpoints } from './config';
 
 export class FootballApiService {
@@ -100,6 +104,31 @@ export class FootballApiService {
         options,
       });
       return fixtures.response;
+    } catch (error) {
+      logger(error);
+      return null;
+    }
+  }
+
+  async getStandings(
+    queryParams: FixturesQueryParams,
+    options?: RequestInit,
+  ): Promise<StandingsDTO | null> {
+    try {
+      const standings = await fetcher({
+        endpoint: this.endpoints.STANDINGS,
+        responseSchema: standingsResponseSchema,
+        queryParams,
+        options,
+      });
+
+      if (!standings.response.length) {
+        return null;
+      }
+
+      const [standingsDTO] = standings.response;
+
+      return standingsDTO;
     } catch (error) {
       logger(error);
       return null;
