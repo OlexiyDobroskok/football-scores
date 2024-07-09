@@ -44,6 +44,11 @@ const sortMatchesByDate = (matches: Match[]): MatchesByDate[] => {
   return sortedMatches;
 };
 
+export const MATCHES_KEY = 'matches';
+export const LIVE_MATCHES_KEY = 'live-matches';
+export const UPCOMING_MATCHES_KEY = 'upcoming-matches';
+export const FINISHED_MATCHES_KEY = 'finished-matches';
+
 export const getLiveMatches = async (params: {
   league: string;
   season: string;
@@ -51,7 +56,7 @@ export const getLiveMatches = async (params: {
 }): Promise<Match[]> => {
   const matches = await footballApiService.getFixtures(
     { ...params, live: 'all' },
-    30,
+    { next: { revalidate: 86400, tags: [LIVE_MATCHES_KEY, MATCHES_KEY] } },
   );
 
   return matches ? matches.map((matchDTO) => mapMatch(matchDTO)) : [];
@@ -62,10 +67,13 @@ export const getUpcomingMatches = async (params: {
   season: string;
   round: string;
 }): Promise<MatchesByDate[]> => {
-  const matchesDTO = await footballApiService.getFixtures({
-    ...params,
-    status: upcomingStatusesQuery,
-  });
+  const matchesDTO = await footballApiService.getFixtures(
+    {
+      ...params,
+      status: upcomingStatusesQuery,
+    },
+    { next: {revalidate: 86400, tags: [UPCOMING_MATCHES_KEY, MATCHES_KEY] } },
+  );
 
   const matches = matchesDTO
     ? matchesDTO.map((matchDTO) => mapMatch(matchDTO))
@@ -79,10 +87,13 @@ export const getFinishedMatches = async (params: {
   season: string;
   round: string;
 }): Promise<MatchesByDate[]> => {
-  const matchesDTO = await footballApiService.getFixtures({
-    ...params,
-    status: finishedStatusesQuery,
-  });
+  const matchesDTO = await footballApiService.getFixtures(
+    {
+      ...params,
+      status: finishedStatusesQuery,
+    },
+    { next: { revalidate: 86400, tags: [FINISHED_MATCHES_KEY, MATCHES_KEY] } },
+  );
 
   const matches = matchesDTO
     ? matchesDTO.map((matchDTO) => mapMatch(matchDTO))

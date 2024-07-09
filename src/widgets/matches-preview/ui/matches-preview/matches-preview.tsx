@@ -5,8 +5,10 @@ import { getCurrentRound, getRounds } from '@entities/round';
 import { RoundSwitcher } from '@features/round-switcher';
 import { Tab } from '@shared/ui/tab';
 
+import { MatchesCashController } from '../../api/matches-cash-controller';
 import { matchStatuses } from '../../model/types';
 import { FinishedMatchesPreview } from '../finished/finished-matches-preview';
+import { LiveMatchesPreview } from '../live/live-matches-preview';
 import { UpcomingMatchesPreview } from '../upcoming/upcoming-matches-preview';
 
 import { TabLink } from './tab-link';
@@ -75,7 +77,7 @@ export async function MatchesPreview({
       ? [matchStatuses.UPCOMING]
       : [matchStatuses.LIVE, matchStatuses.UPCOMING, matchStatuses.FINISHED];
 
-  const tabList = enabledTabs.map((tabTitle,_,tabs) => (
+  const tabList = enabledTabs.map((tabTitle, _, tabs) => (
     <li className="flex-1 text-center" key={tabTitle}>
       <Tab isActive={tabTitle === selectedTab} isSingle={tabs.length === 1}>
         <TabLink status={tabTitle}>
@@ -89,6 +91,15 @@ export async function MatchesPreview({
   const isLiveActive = selectedTab === matchStatuses.LIVE;
   const isFinishedActive = selectedTab === matchStatuses.FINISHED;
 
+  // const liveMatches = await getLiveMatches({
+  //   league: leagueId,
+  //   season,
+  //   round: selectedRound,
+  // });
+
+  const matchesIsLive = false;
+  
+
   return (
     <article className="">
       <h2 className="hidden">{`${selectedRound} matches of the ${leagueName}`}</h2>
@@ -101,6 +112,7 @@ export async function MatchesPreview({
       </div>
       <ul className="flex bg-primary">{tabList}</ul>
       <div className="bg-primary">
+        <MatchesCashController isLive={matchesIsLive} />
         {isUpcomingActive && (
           <Suspense fallback={<div>Loading...</div>}>
             <UpcomingMatchesPreview
@@ -113,6 +125,15 @@ export async function MatchesPreview({
         {isFinishedActive && (
           <Suspense fallback={<div>Loading...</div>}>
             <FinishedMatchesPreview
+              leagueId={leagueId}
+              season={season}
+              round={selectedRound}
+            />
+          </Suspense>
+        )}
+        {isLiveActive && (
+          <Suspense fallback={<div>Loading...</div>}>
+            <LiveMatchesPreview
               leagueId={leagueId}
               season={season}
               round={selectedRound}
