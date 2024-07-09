@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 
 import { type LeagueType } from '@entities/league';
+import { type Match } from '@entities/match';
 import { getCurrentRound, getRounds } from '@entities/round';
 import { RoundSwitcher } from '@features/round-switcher';
 import { Tab } from '@shared/ui/tab';
@@ -91,14 +92,15 @@ export async function MatchesPreview({
   const isLiveActive = selectedTab === matchStatuses.LIVE;
   const isFinishedActive = selectedTab === matchStatuses.FINISHED;
 
+  // TODO: delete mock liveMatches
+  
   // const liveMatches = await getLiveMatches({
   //   league: leagueId,
   //   season,
   //   round: selectedRound,
   // });
-
+  const liveMatches = [] as Match[];
   const matchesIsLive = false;
-  
 
   return (
     <article className="">
@@ -133,11 +135,7 @@ export async function MatchesPreview({
         )}
         {isLiveActive && (
           <Suspense fallback={<div>Loading...</div>}>
-            <LiveMatchesPreview
-              leagueId={leagueId}
-              season={season}
-              round={selectedRound}
-            />
+            <LiveMatchesPreview liveMatches={liveMatches} />
           </Suspense>
         )}
       </div>

@@ -1,4 +1,4 @@
-import { MatchPreview, MatchScoreBoard, MatchStatus } from '@entities/match';
+import { type Match, MatchPreview, MatchScoreBoard, MatchStatus } from '@entities/match';
 import { Message } from '@shared/ui/message';
 
 import { getLiveMatches } from '../../api/get-matches';
@@ -6,22 +6,13 @@ import { MatchListItem } from '../match-list-item';
 import { PreviewSection } from '../preview-section';
 
 export interface LiveMatchesPreviewProps {
-  leagueId: string;
-  season: string;
-  round: string;
+  liveMatches: Match[];
 }
 
-export async function LiveMatchesPreview({
-  leagueId,
-  round,
-  season,
+export function LiveMatchesPreview({
+ liveMatches
 }: LiveMatchesPreviewProps) {
-  const liveMatches = await getLiveMatches({
-    league: leagueId,
-    round,
-    season,
-  });
-
+  
   if (!liveMatches.length) {
     return <Message>Sorry, the&nbsp;matches haven&apos;t started yet!</Message>;
   }
