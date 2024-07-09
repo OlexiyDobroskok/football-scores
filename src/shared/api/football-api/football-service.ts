@@ -90,18 +90,14 @@ export class FootballApiService {
 
   async getFixtures(
     queryParams: FixturesQueryParams,
-    revalidate: number = 86400,
+    options?: RequestInit,
   ): Promise<FixtureDTO[] | null> {
     try {
       const fixtures = await fetcher({
         endpoint: this.endpoints.FIXTURES,
         responseSchema: fixturesResponseSchema,
         queryParams,
-        options: {
-          next: {
-            revalidate,
-          },
-        },
+        options,
       });
       return fixtures.response;
     } catch (error) {
