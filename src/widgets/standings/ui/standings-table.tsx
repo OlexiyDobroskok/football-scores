@@ -85,12 +85,6 @@ function Table({
   );
 }
 
-export interface StandingsTableProps {
-  leagueId: string;
-  season: string;
-  leagueName: string;
-}
-
 const TEAM_RELEGATION = 'relegation';
 const PROMOTION_COLORS = [
   'bg-green-600/30',
@@ -132,6 +126,12 @@ function ColorDescriptionList({ eventColors }: { eventColors: EventColors }) {
   );
 
   return <ul className="ps-2">{colorDescriptionList}</ul>;
+}
+
+export interface StandingsTableProps {
+  leagueId: string;
+  season: string;
+  leagueName: string;
 }
 
 export async function StandingsTable({
