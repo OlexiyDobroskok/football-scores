@@ -7,6 +7,7 @@ import { Message } from '@shared/ui/message';
 import { cn } from '@shared/utils';
 
 import { getLeagueStandings } from '../api/get-standings';
+import { type TeamPosition } from '../model/types';
 
 function Cell({
   className,
@@ -19,6 +20,68 @@ function Cell({
     <td className={cn(className, 'p-2 shadow-sm shadow-secondary/30')}>
       {children}
     </td>
+  );
+}
+
+function Position({
+  teamPosition,
+  rankCellColor,
+}: {
+  teamPosition: TeamPosition;
+  rankCellColor: string;
+}) {
+  const { rank, team, played, goalsDiff, points } = teamPosition;
+
+  return (
+    <tr key={rank}>
+      <Cell className={rankCellColor}>{rank}</Cell>
+      <Cell>
+        <Link
+          className="line-clamp-1 flex items-center gap-2"
+          href={`${appRoutes.TEAM}/${team.id}`}
+        >
+          <Image
+            src={team.logo}
+            alt={`${team.name} logo`}
+            width={24}
+            height={24}
+          />
+          {team.name}
+        </Link>
+      </Cell>
+      <Cell>{played}</Cell>
+      <Cell>{goalsDiff}</Cell>
+      <Cell>{points}</Cell>
+    </tr>
+  );
+}
+
+function Table({
+  group,
+  children,
+}: {
+  group: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <table
+      key={group}
+      className="w-full whitespace-nowrap bg-primary text-center text-primary-foreground"
+    >
+      <caption className="px-2 py-2 text-2xl font-medium capitalize">
+        {group}
+      </caption>
+      <thead>
+        <tr className="capitalize shadow-sm shadow-secondary/30">
+          <th>pos</th>
+          <th>club</th>
+          <th>pl</th>
+          <th>gd</th>
+          <th>pts</th>
+        </tr>
+      </thead>
+      <tbody>{children}</tbody>
+    </table>
   );
 }
 
@@ -58,89 +121,64 @@ const bindColorsToGroupEvents = (events: string[]): EventColors => {
   return eventColors;
 };
 
+function ColorDescriptionList({ eventColors }: { eventColors: EventColors }) {
+  const colorDescriptionList = Object.entries(eventColors).map(
+    ([event, color]) => (
+      <li key={event} className="flex items-center gap-2">
+        <span className={cn(color, 'h-2 w-2 rounded-full')}></span>
+        <span className="text-foreground/70">{event}</span>
+      </li>
+    ),
+  );
+
+  return <ul className="ps-2">{colorDescriptionList}</ul>;
+}
+
 export async function StandingsTable({
   leagueId,
   season,
   leagueName,
 }: StandingsTableProps) {
   const standings = await getLeagueStandings({ leagueId, season });
-  let eventColors: EventColors | null = null;
-  const tableList = !!standings.length ? (
-    standings.map(({ group, table, groupEvents }) => {
-      eventColors = bindColorsToGroupEvents(groupEvents);
-      const teamPositionList = table.map(
-        ({ rank, team, played, goalsDiff, points, description }) => {
-          const rankCellColor =
-            description && eventColors ? eventColors[description] : '';
 
-          return (
-            <tr key={rank}>
-              <Cell className={rankCellColor}>{rank}</Cell>
-              <Cell>
-                <Link
-                  className="line-clamp-1 flex items-center gap-2"
-                  href={`${appRoutes.TEAM}/${team.id}`}
-                >
-                  <Image
-                    src={team.logo}
-                    alt={`${team.name} logo`}
-                    width={24}
-                    height={24}
-                  />
-                  {team.name}
-                </Link>
-              </Cell>
-              <Cell>{played}</Cell>
-              <Cell>{goalsDiff}</Cell>
-              <Cell>{points}</Cell>
-            </tr>
-          );
-        },
-      );
+  if (!standings.length) {
+    return <Message>{`${leagueName} standings are not available.`}</Message>;
+  }
+
+  let eventColors: EventColors | null = null;
+  const tableList = standings.map(({ group, table, groupEvents }) => {
+    eventColors = bindColorsToGroupEvents(groupEvents);
+    const teamPositionList = table.map((position) => {
+      const rankCellColor =
+        position.description && eventColors
+          ? eventColors[position.description]
+          : '';
 
       return (
-        <table
-          key={group}
-          className="w-full whitespace-nowrap bg-primary text-center text-primary-foreground"
-        >
-          <caption className="px-2 py-2 text-2xl font-medium capitalize">
-            {group}
-          </caption>
-          <thead>
-            <tr className="capitalize shadow-sm shadow-secondary/30">
-              <th>pos</th>
-              <th>club</th>
-              <th>pl</th>
-              <th>gd</th>
-              <th>pts</th>
-            </tr>
-          </thead>
-          <tbody>{teamPositionList}</tbody>
-        </table>
+        <Position
+          key={position.rank}
+          teamPosition={position}
+          rankCellColor={rankCellColor}
+        />
       );
-    })
-  ) : (
-    <Message>{`${leagueName} standings are not available.`}</Message>
-  );
+    });
 
-  const colorDescriptionList = Object.entries(eventColors ?? {}).map(
-    ([event, color]) => {
-      if (typeof color === 'string') {
-        return <li key={event} className='flex gap-2 items-center'>
-          <span className={cn(color,'w-2 h-2 rounded-full')}></span>
-          <span>{event}</span>
-        </li>;
-      }
-
-      return null;
-    },
-  );
+    return (
+      <Table key={group} group={group}>
+        {teamPositionList}
+      </Table>
+    );
+  });
 
   return (
-    <article>
+    <article className="space-y-3">
       <h2 className="hidden">{`${leagueName} Standings`}</h2>
       <div>{tableList}</div>
-      {colorDescriptionList && <ul className='pt-2 ps-2'>{colorDescriptionList}</ul>}
+      {eventColors && (
+        <div>
+          <ColorDescriptionList eventColors={eventColors} />
+        </div>
+      )}
     </article>
   );
 }
