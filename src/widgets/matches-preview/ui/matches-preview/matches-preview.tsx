@@ -54,11 +54,24 @@ export async function MatchesPreview({
       ? currentRound
       : rounds.at(-1)!;
 
+  // TODO: get live matches
+  
+  // const liveMatches = await getLiveMatches({
+  //   league: leagueId,
+  //   season,
+  //   round: selectedRound,
+  // });
+
+  const liveMatches = [] as Match[];
+  const matchesIsLive = liveMatches.length > 0;
+
   const selectedTab = matchStatusQuery
     ? matchStatusQuery
-    : isFinishedSeason
-      ? matchStatuses.FINISHED
-      : matchStatuses.UPCOMING;
+    : matchesIsLive
+      ? matchStatuses.LIVE
+      : isFinishedSeason
+        ? matchStatuses.FINISHED
+        : matchStatuses.UPCOMING;
 
   const currentRoundIndex = currentRound ? rounds.indexOf(currentRound) : -1;
   const selectedRoundIndex = rounds.indexOf(selectedRound);
@@ -91,16 +104,6 @@ export async function MatchesPreview({
   const isUpcomingActive = selectedTab === matchStatuses.UPCOMING;
   const isLiveActive = selectedTab === matchStatuses.LIVE;
   const isFinishedActive = selectedTab === matchStatuses.FINISHED;
-
-  // TODO: delete mock liveMatches
-  
-  // const liveMatches = await getLiveMatches({
-  //   league: leagueId,
-  //   season,
-  //   round: selectedRound,
-  // });
-  const liveMatches = [] as Match[];
-  const matchesIsLive = false;
 
   return (
     <article className="">
