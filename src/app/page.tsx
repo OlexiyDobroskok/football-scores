@@ -9,6 +9,7 @@ import {
 } from '@shared/config/search-params';
 import { MobileLeaguesNavigation } from '@widgets/leagues-navigation';
 import { MatchesPreview } from '@widgets/matches-preview';
+import { StandingsTable } from '@widgets/standings';
 
 export default async function Home({
   searchParams,
@@ -69,17 +70,24 @@ export default async function Home({
           </div>
         )}
       </header>
-      <main className="px-5">
+      <main className="space-y-4 px-5">
         <div className="pt-4">
+          <MatchesPreview
+            leagueId={leagueId}
+            season={selectedSeason.year}
+            leagueType={league.type}
+            leagueName={league.name}
+            roundQuery={matchRoundQuery}
+            matchStatusQuery={matchesStatusQuery}
+            isFinishedSeason={isFinishedSeason}
+          />
+        </div>
+        <div>
           <Suspense fallback={<div>Loading...</div>}>
-            <MatchesPreview
+            <StandingsTable
               leagueId={leagueId}
               season={selectedSeason.year}
-              leagueType={league.type}
               leagueName={league.name}
-              roundQuery={matchRoundQuery}
-              matchStatusQuery={matchesStatusQuery}
-              isFinishedSeason={isFinishedSeason}
             />
           </Suspense>
         </div>
