@@ -4,6 +4,8 @@ import { Suspense } from 'react';
 
 import { ApiDemoCounter, footballApiService } from '@shared/api/football-api';
 import { Icon } from '@shared/ui/icon';
+import { cn } from '@shared/utils';
+import { BottomNavigation } from '@widgets/bottom-navigation';
 
 import './globals.css';
 
@@ -14,7 +16,7 @@ export const metadata: Metadata = {
 
 const arsenalFont = Arsenal({
   subsets: ['latin'],
-  weight: ['400',  '700'],
+  weight: ['400', '700'],
   display: 'swap',
 });
 
@@ -28,7 +30,7 @@ export default function RootLayout({
   const accountStatus = footballApiService.getAccountStatus();
   return (
     <html lang="en">
-      <body className={arsenalFont.className}>
+      <body className={cn(arsenalFont.className, 'relative min-h-svh pb-10')}>
         {children}
         <div className="absolute bottom-2 right-2 flex h-10 items-center justify-center">
           <Suspense
@@ -36,6 +38,11 @@ export default function RootLayout({
           >
             <ApiDemoCounter accountStatusData={accountStatus} />
           </Suspense>
+        </div>
+        <div className="fixed bottom-1 left-1/2 w-4/5 -translate-x-1/2 rounded-md bg-background/80">
+          <div className="">
+            <BottomNavigation />
+          </div>
         </div>
       </body>
     </html>
