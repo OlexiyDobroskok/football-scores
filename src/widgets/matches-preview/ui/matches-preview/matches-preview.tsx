@@ -55,7 +55,7 @@ export async function MatchesPreview({
       : rounds.at(-1)!;
 
   // TODO: get live matches
-  
+
   // const liveMatches = await getLiveMatches({
   //   league: leagueId,
   //   season,
@@ -116,7 +116,7 @@ export async function MatchesPreview({
         />
       </div>
       <ul className="flex bg-primary">{tabList}</ul>
-      <div className="bg-primary">
+      <div className="min-h-24 bg-primary">
         <MatchesCashController isLive={matchesIsLive} />
         {isUpcomingActive && (
           <Suspense fallback={<div>Loading...</div>}>
