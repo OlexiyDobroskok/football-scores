@@ -26,8 +26,7 @@ export async function FinishedMatchesPreview({
   if (!finishedMatches.length) {
     return (
       <Message>
-        Sorry, the&nbsp;matches are still going&nbsp;on or haven&apos;t started
-        yet!
+        The&nbsp;matches are still going&nbsp;on or haven&apos;t started yet!
       </Message>
     );
   }

@@ -14,7 +14,7 @@ export function LiveMatchesPreview({
 }: LiveMatchesPreviewProps) {
   
   if (!liveMatches.length) {
-    return <Message>Sorry, the&nbsp;matches haven&apos;t started yet!</Message>;
+    return <Message>The&nbsp;matches haven&apos;t started yet!</Message>;
   }
 
   const liveMatchList = liveMatches.map((match) => (
