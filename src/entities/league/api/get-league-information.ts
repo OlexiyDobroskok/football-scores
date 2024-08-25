@@ -12,7 +12,7 @@ export const getLeagueInformation = async (
     id,
   });
 
-  if (!leaguesDTO) {
+  if (!leaguesDTO || leaguesDTO.length === 0) {
     return null;
   }
 
