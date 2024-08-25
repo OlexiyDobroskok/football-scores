@@ -30,7 +30,7 @@ export async function UpcomingMatchesPreview({
   if (!upcomingMatches.length) {
     return (
       <Message>
-        Sorry, no upcoming matches or matches will be added later!
+        No upcoming matches or matches will be added later!
       </Message>
     );
   }
