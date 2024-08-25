@@ -89,28 +89,28 @@ const TEAM_RELEGATION = 'relegation';
 const PROMOTION_COLORS = [
   'bg-green-600/30',
   'bg-blue-600/30',
-  'bg-orange-600/30',
+  'bg-yellow-600/30',
 ];
-const RELEGATION_COLORS = ['bg-red-600/30'];
+const RELEGATION_COLORS = ['bg-red-500/30', 'bg-red-600/30', 'bg-red-700/30'];
 
 type EventColors = Record<string, string>;
 
 const bindColorsToGroupEvents = (events: string[]): EventColors => {
   const eventColors = {} as EventColors;
-  const relegationEvent = events.find((event) =>
+  const relegationEvents = events.filter((event) =>
     event.toLocaleLowerCase().includes(TEAM_RELEGATION),
   );
   const promotionEvents = events.filter(
-    (event) => event.toLowerCase() !== relegationEvent,
+    (event) => !event.toLocaleLowerCase().includes(TEAM_RELEGATION),
   );
 
   promotionEvents.forEach((event, index) => {
     eventColors[event] = PROMOTION_COLORS[index];
   });
 
-  if (relegationEvent) {
-    eventColors[relegationEvent] = RELEGATION_COLORS.at(0)!;
-  }
+  relegationEvents.forEach((event, index) => {
+    eventColors[event] = RELEGATION_COLORS[index];
+  });
 
   return eventColors;
 };
