@@ -25,7 +25,12 @@ import {
   StandingsDTO,
   standingsResponseSchema,
 } from './response-schemas/standings';
-import { endpoints, fetcher, type FootballApiEndpoints } from './config';
+import {
+  endpoints,
+  fetcher,
+  type FootballApiEndpoints,
+  FootballAPIError,
+} from './config';
 
 export class FootballApiService {
   constructor(private endpoints: FootballApiEndpoints) {}
@@ -63,6 +68,7 @@ export class FootballApiService {
           },
         },
       });
+
 
       return leagues.response;
     } catch (error) {
@@ -103,6 +109,8 @@ export class FootballApiService {
         queryParams,
         options,
       });
+      FootballAPIError.checkErrors(fixtures.errors);
+
       return fixtures.response;
     } catch (error) {
       logger(error);

@@ -3,6 +3,8 @@ import { z } from 'zod';
 import { serverEnv } from '@shared/config/env/server';
 import { InvalidResponseDataException } from '@shared/config/exceptions';
 
+import { type APIError } from './response-schemas/base';
+
 export const baseUrl = 'https://v3.football.api-sports.io';
 
 export const accessHeaders = new Headers();
@@ -68,13 +70,43 @@ export const fetcher = async <ZT extends z.ZodType>({
     const errorMessage = `Fetch to ${endpoint} failed with ${response.status} status`;
     throw new Error(errorMessage);
   }
+
   const data = (await response.json()) as unknown;
   const parsedData = responseSchema.safeParse(data);
-
   if (!parsedData.success) {
+    console.log(parsedData.error);
     const errorMessage = `Invalid data from ${endpoint}`;
     throw new InvalidResponseDataException(errorMessage);
   }
 
   return parsedData.data;
 };
+
+export class FootballAPIError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'FootballAPIError';
+    this.message = message;
+  }
+
+  static checkErrors(errors: APIError) {
+    let message = '';
+    console.log('---------------------', errors);
+
+    if (Array.isArray(errors)) {
+      errors.forEach((error) => {
+        if (typeof error === 'string') {
+          message += `${error}\n`;
+        }
+      });
+    }
+
+    for (const error in errors) {
+      message += `${error}: ${errors[error as keyof APIError]}\n`;
+    }
+
+    if (message) {
+      throw new FootballAPIError(message);
+    }
+  }
+}
